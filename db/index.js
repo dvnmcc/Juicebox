@@ -114,12 +114,12 @@ async function getUserByUsername(username) {
       [username]
     );
 
-    if (!user) {
-      throw {
-        name: "UserNotFoundError",
-        message: "A user with that username does not exist",
-      };
-    }
+    // if (!user) {
+    //   throw {
+    //     name: "UserNotFoundError",
+    //     message: "A user with that username does not exist",
+    //   };
+    // }
 
     return user;
   } catch (error) {
@@ -317,7 +317,7 @@ async function getPostsByTagName(tagName) {
 
 async function createTags(tagList) {
   if (tagList.length === 0) {
-    return;
+    return tagList;
   }
 
   const valuesStringInsert = tagList
@@ -397,6 +397,22 @@ async function getAllTags() {
   }
 }
 
+async function deletePost(postId) {
+  try {
+    const result = await client.query(
+      `
+    DELETE FROM posts WHERE id = $1
+    RETURNING *
+    `,
+      [postId]
+    );
+
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 module.exports = {
   client,
   createUser,
@@ -414,4 +430,5 @@ module.exports = {
   getAllTags,
   createPostTag,
   addTagsToPost,
+  deletePost,
 };
